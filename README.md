@@ -1,53 +1,60 @@
 # TiDB Cloud Data Service Guide
 
-This is a comprehensive guide about how to use TiDB Cloud Data Service to build a simple dashboard app.
+This guide provides comprehensive instructions on how to utilize TiDB Cloud Data Service for building a simple dashboard app.
 
-See here for more documentation, https://docs.pingcap.com/tidbcloud/data-service-overview
+- [Data Service Documentation](https://docs.pingcap.com/tidbcloud/data-service-overview)
 
-## Sign in with TiDB Cloud and create a free serverless cluster
+## Quick Start
 
-Go to the TiDB Cloud website and sign in with your Google/GitHub account. Then, click on the "Create Cluster" button and select the "Serverless" option. This will create a free cluster that will automatically scale up and down based on your usage.
+### Step 1: Sign in to TiDB Cloud and Create a Free Serverless Cluster
 
-## Explore the `sold_car_orders` table in the sample data
+Access the TiDB Cloud website and sign in using your Google or GitHub account. Proceed by clicking the "Create Cluster" button and selecting the "Serverless" option. This will generate a free cluster that automatically scales based on your usage.
 
-TiDB Cloud comes with a sample dataset that includes a table called `sold_car_orders`. This table contains information about car orders that have been placed. We'll be using this table to build your dashboard app.
+### Step 2: Explore the Sample Data's `sold_car_orders` Table
 
-## Open Data Service to create an endpoint
+TiDB Cloud includes a sample dataset that contains a table named `sold_car_orders`. This table stores information about car orders. We will utilize this table to construct your dashboard app.
 
-**Data Service** is a feature of TiDB Cloud that allows you to easily expose your data to the outside world. To create an endpoint, we first create a DataApp in the "Data Service" tab, then click on the "Create Endpoint" button. Give your endpoint a name and then select the table that you want to expose.
+### Step 3: Open Data Service and Create an Endpoint
 
-To protect your endpoints, you'll also need to create a pair of API Keys for authentication.
+The **Data Service** feature of TiDB Cloud simplifies the process of exposing your data externally. To create an endpoint, follow these steps:
+1. In the "Data Service" tab, create a DataApp.
+2. Click on the "Create Endpoint" button.
+3. Assign a name to your endpoint.
+4. Select the table you wish to expose.
 
-## Configure the endpoint properties
+For endpoint protection, you need to generate a pair of API Keys for authentication.
+
+### Step 4: Configure the Endpoint Properties
 
 In the "Properties" section, you can configure the following settings:
+- Endpoint Path: This URL path is used to access the endpoint.
+- Endpoint URL: This represents the full URL of your endpoint.
+- Request Method: Specify the SQL query to execute when the endpoint is accessed.
+- Timeout: Determine the format of the data returned by the endpoint.
 
-- Endpoint Path: This is the URL path that will be used to access the endpoint.
-- Endpoint URL: This is the full URL of your endpoint.
-- Request Method: This is the SQL query that will be executed when the endpoint is accessed.
-- Timeout: This is the format of the data that will be returned by the endpoint. 5. Use the AI to help you write the SQL
+### Step 5: Utilize AI for SQL Query Assistance
 
-If you're not sure how to write the SQL query, you can use AI to help you. Click on the "AI" button and then type in a description of what you want the query to do. The AI will then generate a SQL query for you.
+If you are unsure how to write an SQL query, you can leverage AI assistance. Click on the "AI" button and provide a description of the query's purpose. The AI will generate the corresponding SQL query for you.
 
-## Run the SQL and check the result
+### Step 6: Run the SQL Query and Verify the Result
 
-Once you've configured the endpoint, you can run the SQL query to see the results. Click on the "Run" button and then click on the "Results" tab to see the results.
+Once you have configured the endpoint, execute the SQL query to view the results. Click on the "Run" button and switch to the "Results" tab to examine the outcome.
 
-## Deploy the endpoint
+### Step 7: Deploy the Endpoint
 
-Once you're satisfied with the results, you can deploy the endpoint. Click on the "Deploy" button and then click on the "Deployed" tab to see the deployed endpoint.
+Upon satisfaction with the results, proceed to deploy the endpoint. Click on the "Deploy" button and navigate to the "Deployed" tab to confirm the deployment.
 
-## Create a Next.js project to fetch the endpoint
+### Step 8: Create a Next.js Project for Fetching the Endpoint
 
-Now that you have an endpoint deployed, you can create a Next.js project to fetch the data. Next.js is a React framework that makes it easy to create web applications.
+With the deployed endpoint, you can create a Next.js project to fetch the data. Next.js is a React framework that simplifies web application development.
 
-To create a Next.js project, run the following command:
+To create a Next.js project, execute the following command:
 
 ```sh
 npx create-next-app@latest
 ```
 
-Next, open your app directory and edit the pages/index.js file. Put your API keys in the .env file, they will be ignored by git so you don't worry about leaking it accidentally.
+Then, navigate to your app directory and modify the pages/index.js file. Place your API keys in the .env file, which will be excluded by Git to prevent accidental exposure.
 
 ```
 TIDBCLOUD_DATA_SERVICE_PUBLIC_KEY=PUBLIC_KEY
@@ -55,7 +62,7 @@ TIDBCLOUD_DATA_SERVICE_PRIVATE_KEY=PRIVATE_KEY
 TIDBCLOUD_DATA_SERVICE_HOST=https://us-east-1.data.tidbcloud.com/api/v1beta/app/dataapi-xxxxxx/endpoint/v1
 ```
 
-Once it's ready, you can use the `with-digest-fetch` library to fetch the API with your API keys.
+Once the setup is complete, employ the with-digest-fetch library to fetch the API using your API keys.
 
 ```js
 import DigestFetch from "with-digest-fetch";
@@ -67,11 +74,14 @@ const client = new DigestFetch(
 client.fetch(...)
 ```
 
-## Use Chart.js to display the data in a beautiful chart
+### Step 9: Utilize Chart.js to Visualize Data in Charts
 
-We'll be using the Chart.js library for beautiful data visualization. Chart.js is a simple and flexible open-source JavaScript library that makes it easy to create beautiful charts.
+For elegant data visualization, we will utilize the Chart.js library. Chart.js is an open-source JavaScript library that simplifies the creation of beautiful charts.
 
-To create a line chart, you first fetch the API, then pass the chart options and your data to the `Line` component:
+To create a line chart, follow these steps:
+
+1. Fetch the API data.
+1. Provide the chart options, data, and labels to the Line component.
 
 ```js
 const { data: orderByBrandYearData } = useSWR();
@@ -82,8 +92,7 @@ const datasets = [...]
 <Line options={options} data={{ labels, datasets }}>
 ```
 
-Now you can create more APIs and keep adding more charts to your app.
+Feel free to create additional APIs and incorporate more charts into your application.
 
-## Deploy to Vercel
-
-After you've finished building, you can push your code to GitHub, and go to vercel.com to import it, follow the instruction there it will automatically deploy your app in a couple of minutes!
+### Step 10: Deploy to Vercel
+Once your development is complete, push your code to GitHub. Visit vercel.com, import your code, and follow the provided instructions. Vercel will automatically deploy your application within minutes!
