@@ -1,4 +1,5 @@
 import useSWR, { Fetcher } from "swr";
+import Image from "next/image";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -143,12 +144,12 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col max-w-[800px] mx-auto gap-4 mt-8">
+    <div className="flex flex-col max-w-[800px] min-h-screen mx-auto gap-4 pt-8">
       <div className="shadow-xl bg-white rounded p-4 w-full ">
         <Line options={options} data={{ labels, datasets }} />
       </div>
 
-      <div className="flex gap-4 flex-col md:flex-row">
+      <div className="flex gap-4 flex-col md:flex-row md:min-h-[392px]">
         <div className="shadow-xl bg-white rounded p-4 flex-1 flex-shrink-0 md:w-[49%]">
           <header className="flex justify-between">
             <div className="font-bold">Top Brand</div>
@@ -211,6 +212,25 @@ export default function Home() {
           />
         </div>
       </div>
+
+      <footer className="flex items-center justify-center mt-4">
+        <a
+          className="flex gap-2"
+          href="https://tidbcloud.com/?utm_source=smartchart&utm_medium=referral"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-mp-event="Click TiDB Cloud Site Link"
+        >
+          Powered by{" "}
+          <Image
+            src="/tidb.svg"
+            alt="TiDB Cloud Logo"
+            width={138}
+            height={24}
+            priority
+          />
+        </a>
+      </footer>
     </div>
   );
 }
