@@ -6,7 +6,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { path } = req.query;
-  const response = await fetcher(path as string);
+  const { path, ...rest } = req.query;
+
+  const searchParams = new URLSearchParams();
+  for (const key in rest) {
+    searchParams.append(key, rest[key] as string);
+  }
+  const url =
+    Object.keys(rest).length > 0
+      ? `${path}?${searchParams.toString()}`
+      : (path as string);
+
+  const response = await fetcher(url);
   res.status(200).json(response);
 }
