@@ -34,7 +34,7 @@ In the "Properties" section, you can configure the following settings:
 
 ### Step 5: Utilize AI for SQL Query Assistance
 
-If you are unsure how to write an SQL query, you can leverage AI assistance. Click on the "AI" button and provide a description of the query's purpose. The AI will generate the corresponding SQL query for you.
+If you are unsure how to write an SQL query, you can leverage AI assistance. Input a comment starting from "--", then describe the query's purpose, and press the ENTER key when you are finished. The AI will generate the corresponding SQL query for you.
 
 ### Step 6: Run the SQL Query and Verify the Result
 
