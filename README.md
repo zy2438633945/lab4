@@ -30,7 +30,7 @@ In the "Properties" section, you can configure the following settings:
 - Endpoint Path: This URL path is used to access the endpoint.
 - Endpoint URL: This represents the full URL of your endpoint.
 - Request Method: Specify the SQL query to execute when the endpoint is accessed.
-- Timeout: Determine the format of the data returned by the endpoint.
+- Timeout: Determine the timeout of the data returned by the endpoint.
 
 ### Step 5: Utilize AI for SQL Query Assistance
 
