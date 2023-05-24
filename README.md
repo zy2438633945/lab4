@@ -1,60 +1,106 @@
 # TiDB Cloud Data Service Guide
 
-This guide provides comprehensive instructions on how to utilize TiDB Cloud Data Service for building a simple dashboard app.
+TiDB Cloud is a powerful and user-friendly cloud-based database platform. This comprehensive guide aims to offer detailed instructions on leveraging the TiDB Cloud Data Service to construct a straightforward dashboard application using less than 100 lines of code.
 
-- [Data Service Documentation](https://docs.pingcap.com/tidbcloud/data-service-overview)
+To begin with, you can refer to the Data Service documentation and try out the online demo to gain familiarity with the platform.
 
-## Quick Start
+- [Access the Data Service Documentation for more information](https://docs.pingcap.com/tidbcloud/data-service-overview)
+- [Check out the online demo of the dashboard app](https://data-service-example.vercel.app/)
 
-### Step 1: Sign in to TiDB Cloud and Create a Free Serverless Cluster
+## Prepare
 
-Access the TiDB Cloud website and sign in using your Google or GitHub account. Proceed by clicking the "Create Cluster" button and selecting the "Serverless" option. This will generate a free cluster that automatically scales based on your usage.
+Before you can start building your dashboard app, you need to prepare your environment. You can do this by signing in to TiDB Cloud and creating a free Serverless Cluster. Simply access the TiDB Cloud website, sign in using your Google or GitHub account, and click the "Create Cluster" button. Select the "Serverless" option to generate a free cluster that automatically scales based on your usage.
 
-### Step 2: Explore the Sample Data's `sold_car_orders` Table
+Once your cluster is set up, you can begin exploring the sample data provided by TiDB Cloud. This sample dataset includes a table called `sold_car_orders`, which stores information about car orders. We will use this table to construct the dashboard app.
 
-TiDB Cloud includes a sample dataset that contains a table named `sold_car_orders`. This table stores information about car orders. We will utilize this table to construct your dashboard app.
+With this preparation in place, you are now ready to dive into the details of building your dashboard app using TiDB Cloud Data Service. Let's get started!
 
-### Step 3: Open Data Service and Create an Endpoint
+## Design and build the API
 
-The **Data Service** feature of TiDB Cloud simplifies the process of exposing your data externally. To create an endpoint, follow these steps:
-1. In the "Data Service" tab, create a DataApp.
-2. Click on the "Create Endpoint" button.
-3. Assign a name to your endpoint.
-4. Select the table you wish to expose.
+To begin designing our dashboard application, we will query the following data from the database and display them as charts for user convenience:
 
-For endpoint protection, you need to generate a pair of API Keys for authentication.
+- Annual sales of car orders for the past years and the average selling price for all orders in those years, displayed as a line chart
+- Top 10 car brands and models with the highest sales order count and highest selling price for a given year, displayed as a list
 
-### Step 4: Configure the Endpoint Properties
+This can be summarized into 4 corresponding APIs:
 
-In the "Properties" section, you can configure the following settings:
-- Endpoint Path: This URL path is used to access the endpoint.
-- Endpoint URL: This represents the full URL of your endpoint.
-- Request Method: Specify the SQL query to execute when the endpoint is accessed.
-- Timeout: Determine the timeout of the data returned by the endpoint.
+- GET `/total_order_per_year`
+- GET `/avg_price_per_year`
+- GET `/order_by_brand_year?year=${year}`
+- GET `/price_by_brand_year?year=${year}`
 
-### Step 5: Utilize AI for SQL Query Assistance
+Using the TiDB Cloud Data Service, we can easily create and deploy these APIs with just the corresponding SQL queries implemented in the Web Console. Let's start by implementing each one.
 
-If you are unsure how to write an SQL query, you can leverage AI assistance. Input a comment starting from "--", then describe the query's purpose, and press the ENTER key when you are finished. The AI will generate the corresponding SQL query for you.
+The first two APIs are straightforward and if needed, you can also get help from the AI if you are unfamiliar with SQL. Simply type "--your question" then hit Enter to try out these AI-generated SQL queries.
 
-### Step 6: Run the SQL Query and Verify the Result
+```sql
+-- GET `/total_order_per_year`
+use sample_data;
 
-Once you have configured the endpoint, execute the SQL query to view the results. Click on the "Run" button and switch to the "Results" tab to examine the outcome.
+SELECT
+  `year`,
+  COUNT(*) AS order_count
+FROM
+  `sold_car_orders`
+GROUP BY
+  `year`
+ORDER BY
+  `year`;
 
-### Step 7: Deploy the Endpoint
+-- GET `/avg_price_per_year`
+use sample_data;
 
-Upon satisfaction with the results, proceed to deploy the endpoint. Click on the "Deploy" button and navigate to the "Deployed" tab to confirm the deployment.
-
-### Step 8: Create a Next.js Project for Fetching the Endpoint
-
-With the deployed endpoint, you can create a Next.js project to fetch the data. Next.js is a React framework that simplifies web application development.
-
-To create a Next.js project, execute the following command:
-
-```sh
-npx create-next-app@latest
+SELECT
+  `year`,
+  AVG(`selling_price`) AS avg_price_per_year
+FROM
+  `sample_data`.`sold_car_orders`
+GROUP BY
+  `year`
+ORDER BY
+  `year`;
 ```
 
-Then, navigate to your app directory and modify the pages/index.js file. Place your API keys in the .env file, which will be excluded by Git to prevent accidental exposure.
+You can click the "Deploy" button in the upper right corner to deploy them to the public network, and use the command provided in the `Code Example` to test them. Of course, to protect the security of the API, you need to create a pair of keys for authentication, which can be easily configured by clicking on your DataApp.
+
+The next two APIs require dynamic parameter injection. We can use syntax like `${year}` to represent them, and pass in given values in the Params panel on the right for testing. For GET APIs, these parameters need to be passed in through the query in the URL, while for POST APIs, they need to be included in the request body as json string.
+
+```sql
+-- GET `/order_by_brand_year`
+use sample_data;
+
+SELECT
+  name,
+  COUNT(*) AS order_count
+FROM
+  `sold_car_orders`
+WHERE
+  `year` = ${year}
+GROUP BY
+  `name`
+ORDER BY
+  order_count DESC
+LIMIT 10;
+
+-- GET `/price_by_brand_year`
+use sample_data;
+
+SELECT DISTINCT
+  `name`,
+  `selling_price` as `price`
+FROM
+  `sold_car_orders`
+WHERE
+  `year` = ${year}
+ORDER BY
+  `selling_price` DESC
+LIMIT
+  10;
+```
+
+## Build the frontend
+
+Next, we'll implement the frontend using Next.js and deploy it conveniently via Vercel. To initialize the project, use the `npx create-next-app@latest` command. Once complete, create a `.env` file in the root directory to specify some environment variables that shouldn't be hardcoded in the source code and can be easily changed on-the-fly:
 
 ```
 TIDBCLOUD_DATA_SERVICE_PUBLIC_KEY=PUBLIC_KEY
@@ -62,7 +108,7 @@ TIDBCLOUD_DATA_SERVICE_PRIVATE_KEY=PRIVATE_KEY
 TIDBCLOUD_DATA_SERVICE_HOST=https://us-east-1.data.tidbcloud.com/api/v1beta/app/dataapi-xxxxxx/endpoint/v1
 ```
 
-Once the setup is complete, employ the with-digest-fetch library to fetch the API using your API keys.
+This will enable us to pass these variables through the `with-digest-fetch` library to safely authenticate API requests:
 
 ```js
 import DigestFetch from "with-digest-fetch";
@@ -74,25 +120,165 @@ const client = new DigestFetch(
 client.fetch(...)
 ```
 
-### Step 9: Utilize Chart.js to Visualize Data in Charts
+To work around cross-origin restrictions, let's create a forwarding API interface using Next.js API router. Create an `api/gateway/[path].ts` file under the `pages` folder, and extract the corresponding `path` parameter from incoming requests to forward them to the appropriate TiDB Cloud Data Service API.
 
-For elegant data visualization, we will utilize the Chart.js library. Chart.js is an open-source JavaScript library that simplifies the creation of beautiful charts.
+```ts
+const fetcher = async (key: string, body?: Record<string, any>) => {
+  const url = `${process.env.TIDBCLOUD_DATA_SERVICE_HOST}/${key}`;
+  const res = await client.fetch(url, {
+    body: body ? JSON.stringify(body) : body,
+  });
+  return await res.json();
+};
 
-To create a line chart, follow these steps:
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const { path, ...rest } = req.query;
 
-1. Fetch the API data.
-1. Provide the chart options, data, and labels to the Line component.
+  const searchParams = new URLSearchParams();
+  for (const key in rest) {
+    searchParams.append(key, rest[key] as string);
+  }
+  const url =
+    Object.keys(rest).length > 0
+      ? `${path}?${searchParams.toString()}`
+      : (path as string);
 
-```js
-const { data: orderByBrandYearData } = useSWR();
-const options = ...
-const labels = ...
-const datasets = [...]
-
-<Line options={options} data={{ labels, datasets }}>
+  const response = await fetcher(url);
+  res.status(200).json(response);
+}
 ```
 
-Feel free to create additional APIs and incorporate more charts into your application.
+Now, it's time to focus on the implementation of the frontend code for the browser. Once we retrieve the correct data through the API, we will use `Chart.js` to render them.
 
-### Step 10: Deploy to Vercel
-Once your development is complete, push your code to GitHub. Visit vercel.com, import your code, and follow the provided instructions. Vercel will automatically deploy your application within minutes!
+Check the component code in `pages/index.tsx`. For ease of calling the API in React, we use the library `swr` as follows:
+
+```ts
+const fetcher: Fetcher<any, any> = (
+  input: RequestInfo | URL,
+  init?: RequestInit
+) => globalThis.fetch(input, init).then((res) => res.json());
+
+const { data: orderByYearData } = useSWR(
+  `/api/gateway/order_per_year`,
+  fetcher as Fetcher<OrderByYearData, string>
+);
+const { data: avgPriceByYearData } = useSWR(
+  `/api/gateway/avg_price_per_year`,
+  fetcher as Fetcher<AvgPriceByYearData, string>
+);
+const { data: orderByBrandYearData } = useSWR(
+  `/api/gateway/order_by_brand_year?year=${year}`,
+  fetcher as Fetcher<OrderByBrandYearData, string>
+);
+const { data: topPriceByYearData } = useSWR(
+  `/api/gateway/price_by_brand_year?year=${year}`,
+  fetcher as Fetcher<TopPriceByYearData, string>
+);
+```
+
+After retrieving the data, we configure some options for the chart, then pass in the data to render the desired line chart:
+
+```tsx
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Car Sales Trend",
+    },
+  },
+};
+
+const labels = orderByYearData?.data.rows.map((i) => i.year);
+const datasets = [
+  {
+    data: orderByYearData?.data.rows.map((i) => Number(i.order_count)),
+    label: "Number of Orders",
+    borderColor: "rgb(53, 162, 235)",
+    backgroundColor: "rgba(53, 162, 235, 0.5)",
+  },
+  {
+    data: avgPriceByYearData?.data.rows.map((i) =>
+      Math.round(Number(i.price) / 1000)
+    ),
+    label: "Average Selling Price (K)",
+    borderColor: "rgb(255, 99, 132)",
+    backgroundColor: "rgba(255, 99, 132, 0.5)",
+  },
+];
+
+//render
+<Line options={options} data={{ labels, datasets }} />;
+```
+
+For the remaining two datasets showing the top 10 rankings, we will not use a chart, but instead, directly display them in a list:
+
+```tsx
+function RankList(data: { value: number; name: string }[]) {
+  return (
+    <>
+      {data.map((i, index, array) => (
+        <div key={index}>
+          <div title={i.name}>{i.name}</div>
+          <div>{i.value.toLocaleString("en-US")}</div>
+        </div>
+      ))}
+    </>
+  );
+}
+
+function Home() {
+  return (
+    <div>
+      <RankList
+        data={
+          orderByBrandYearData?.data.rows.slice(0, 10).map((i) => ({
+            name: i.name,
+            value: Number(i.order_count),
+          })) ?? []
+        }
+      />
+
+      <RankList
+        data={
+          topPriceByYearData?.data.rows.slice(0, 10).map((i) => ({
+            name: i.name,
+            value: Number(i.price),
+          })) ?? []
+        }
+      />
+    </div>
+  );
+}
+```
+
+For selecting the year, we can declare a state and allow the user to modify this state through a selector:
+
+```tsx
+const [year, setYear] = useState("2017");
+
+<div>
+  <span>Year:</span>
+  <select value={year} onChange={(e) => setYear(e.target.value)}>
+    {labels?.map((i) => (
+      <option key={i} value={i}>
+        {i}
+      </option>
+    ))}
+  </select>
+</div>;
+```
+
+## Finish
+
+Next, we can further optimize the styling to make the page more attractive. With this, we have completed the development of this dashboard!
+
+By using TiDB Cloud Data Service, what would have been several days of extensive backend API development work can now be done in just couple minutes. Furthermore, users are not burdened with deployment and operation concerns. All that remains is to push the code to GitHub and, with a few clicks on vercel.com, our application is online!
+
+You can view the complete source code on our [GitHub repository page](https://github.com/tidbcloud/data-service-example), or try out our online demo [here](https://data-service-example.vercel.app/).

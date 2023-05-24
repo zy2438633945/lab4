@@ -42,19 +42,12 @@ interface ResponseData<T> {
 }
 
 type OrderByYearData = ResponseData<{ order_count: string; year: string }>;
-type AvgPriceByYearData = ResponseData<{
-  price: string;
-  year: string;
-}>;
-type TopPriceByYearData = ResponseData<{
-  price: string;
-  name: string;
-}>;
-
-type OrderByBrandYearData = ResponseData<{
-  name: string;
-  order_count: string;
-}>;
+// prettier-ignore
+type AvgPriceByYearData = ResponseData<{ price: string; year: string; }>;
+// prettier-ignore
+type TopPriceByYearData = ResponseData<{ price: string;name: string; }>;
+// prettier-ignore
+type OrderByBrandYearData = ResponseData<{ name: string; order_count: string; }>;
 
 function RankList({
   data,
