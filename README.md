@@ -1,37 +1,35 @@
 # TiDB Cloud Data Service Guide
 
-TiDB Cloud is a powerful and user-friendly cloud-based database platform. This comprehensive guide aims to offer detailed instructions on leveraging the TiDB Cloud Data Service to construct a straightforward dashboard application using less than 100 lines of code.
+TiDB Cloud is a powerful and user-friendly cloud-based database platform. This comprehensive guide aims to offer detailed instructions on leveraging the TiDB Cloud Data Service to construct a straightforward dashboard app using less than 100 lines of code.
 
 To begin with, you can refer to the Data Service documentation and try out the online demo to gain familiarity with the platform.
 
 - [Access the Data Service Documentation for more information](https://docs.pingcap.com/tidbcloud/data-service-overview)
 - [Check out the online demo of the dashboard app](https://data-service-example.vercel.app/)
 
-## Prepare
+## Prepare the data source
 
 Before you can start building your dashboard app, you need to prepare your environment. You can do this by signing in to TiDB Cloud and creating a free Serverless Cluster. Simply access [the TiDB Cloud website](https://tidbcloud.com/), sign in using your Google or GitHub account, and click the "Create Cluster" button. Select the "Serverless" option to generate a free cluster that automatically scales based on your usage.
 
 Once your cluster is set up, you can begin exploring the sample data provided by TiDB Cloud. This sample dataset includes a table called `sold_car_orders`, which stores information about car orders. We will use this table to construct the dashboard app.
 
-With this preparation in place, you are now ready to dive into the details of building your dashboard app using TiDB Cloud Data Service. Let's get started!
+## Build APIs
 
-## Design and build the API
+Our dashboard includes the following data:
 
-To begin designing our dashboard application, we will query the following data from the database and display them as charts for user convenience:
+- Annual sales of car orders for the past years and the average selling price for all orders in those years(line chart)
+- Top 10 car brands and models with the highest sales order count and highest selling price for a given year(item list)
 
-- Annual sales of car orders for the past years and the average selling price for all orders in those years, displayed as a line chart
-- Top 10 car brands and models with the highest sales order count and highest selling price for a given year, displayed as a list
-
-This can be summarized into 4 corresponding APIs:
+This can be done by 4 corresponding APIs:
 
 - GET `/total_order_per_year`
 - GET `/avg_price_per_year`
 - GET `/order_by_brand_year?year=${year}`
 - GET `/price_by_brand_year?year=${year}`
 
-Using the TiDB Cloud Data Service, we can easily create and deploy these APIs with just the corresponding SQL queries implemented in the Web Console. Let's start by implementing each one.
+Using the TiDB Cloud **Data Service**, we can easily create and deploy these APIs with just a few clicks.
 
-The first two APIs are straightforward and if needed, you can also get help from the AI if you are unfamiliar with SQL. Simply type "--your question" then hit Enter to try out these AI-generated SQL queries.
+> The first two APIs are straightforward and if needed, you can also get help from the AI feature, simply type "-- [your question text here]" then hit the `Enter` key to try out these AI-generated SQL queries.
 
 ```sql
 -- GET `/total_order_per_year`
@@ -61,7 +59,7 @@ ORDER BY
   `year`;
 ```
 
-You can click the "Deploy" button in the upper right corner to deploy them to the public network and use the command provided in the `Code Example` to test them. Of course, to protect the security of the API, you need to create a pair of keys for authentication, which can be easily configured by clicking on your DataApp.
+You can click the `Deploy` button in the upper right corner to deploy them to the public network and use the command provided in the `Code Example` to test them. Of course, to protect the security of the API, you need to create a pair of keys for authentication, which can be easily configured by clicking on your DataApp.
 
 The next two APIs require dynamic parameter injection. We can use syntax like `${year}` to represent them and pass in given values in the Params panel on the right for testing. For GET APIs, these parameters need to be passed in through the query in the URL, while for POST APIs, they need to be included in the request body as JSON strings.
 
@@ -98,7 +96,7 @@ LIMIT
   10;
 ```
 
-## Build the frontend
+## Build the front-end
 
 Next, we'll implement the front-end using Next.js and deploy it conveniently via Vercel. To initialize the project, use the `npx create-next-app@latest` command. Once complete, create a `.env` file in the root directory to specify some environment variables that shouldn't be hardcoded in the source code and can be easily changed on-the-fly:
 
@@ -279,6 +277,6 @@ const [year, setYear] = useState("2017");
 
 Next, we can further optimize the styling to make the page more attractive. With this, we have completed the development of this dashboard!
 
-By using TiDB Cloud Data Service, what would have been several days of extensive backend API development work can now be done in just a couple of minutes. Furthermore, users are not burdened with deployment and operation concerns. All that remains is to push the code to GitHub and, with a few clicks on vercel.com, our application is online!
+By using TiDB Cloud Data Service, what would have been several days of extensive backend API development work can now be done in just a couple of minutes. Furthermore, users are not burdened with deployment and operation concerns. All that remains is to push the code to GitHub and, with a few clicks on vercel.com, our app is online!
 
 You can view the complete source code on our [GitHub repository page](https://github.com/tidbcloud/data-service-example), or try out our online demo [here](https://data-service-example.vercel.app/).
