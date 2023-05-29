@@ -9,7 +9,7 @@ To begin with, you can refer to the Data Service documentation and try out the o
 
 ## Prepare
 
-Before you can start building your dashboard app, you need to prepare your environment. You can do this by signing in to TiDB Cloud and creating a free Serverless Cluster. Simply access the TiDB Cloud website, sign in using your Google or GitHub account, and click the "Create Cluster" button. Select the "Serverless" option to generate a free cluster that automatically scales based on your usage.
+Before you can start building your dashboard app, you need to prepare your environment. You can do this by signing in to TiDB Cloud and creating a free Serverless Cluster. Simply access [the TiDB Cloud website](https://tidbcloud.com/), sign in using your Google or GitHub account, and click the "Create Cluster" button. Select the "Serverless" option to generate a free cluster that automatically scales based on your usage.
 
 Once your cluster is set up, you can begin exploring the sample data provided by TiDB Cloud. This sample dataset includes a table called `sold_car_orders`, which stores information about car orders. We will use this table to construct the dashboard app.
 
@@ -61,9 +61,9 @@ ORDER BY
   `year`;
 ```
 
-You can click the "Deploy" button in the upper right corner to deploy them to the public network, and use the command provided in the `Code Example` to test them. Of course, to protect the security of the API, you need to create a pair of keys for authentication, which can be easily configured by clicking on your DataApp.
+You can click the "Deploy" button in the upper right corner to deploy them to the public network and use the command provided in the `Code Example` to test them. Of course, to protect the security of the API, you need to create a pair of keys for authentication, which can be easily configured by clicking on your DataApp.
 
-The next two APIs require dynamic parameter injection. We can use syntax like `${year}` to represent them, and pass in given values in the Params panel on the right for testing. For GET APIs, these parameters need to be passed in through the query in the URL, while for POST APIs, they need to be included in the request body as json string.
+The next two APIs require dynamic parameter injection. We can use syntax like `${year}` to represent them and pass in given values in the Params panel on the right for testing. For GET APIs, these parameters need to be passed in through the query in the URL, while for POST APIs, they need to be included in the request body as JSON strings.
 
 ```sql
 -- GET `/order_by_brand_year`
@@ -100,7 +100,7 @@ LIMIT
 
 ## Build the frontend
 
-Next, we'll implement the frontend using Next.js and deploy it conveniently via Vercel. To initialize the project, use the `npx create-next-app@latest` command. Once complete, create a `.env` file in the root directory to specify some environment variables that shouldn't be hardcoded in the source code and can be easily changed on-the-fly:
+Next, we'll implement the front-end using Next.js and deploy it conveniently via Vercel. To initialize the project, use the `npx create-next-app@latest` command. Once complete, create a `.env` file in the root directory to specify some environment variables that shouldn't be hardcoded in the source code and can be easily changed on-the-fly:
 
 ```
 TIDBCLOUD_DATA_SERVICE_PUBLIC_KEY=PUBLIC_KEY
@@ -151,7 +151,7 @@ export default async function handler(
 }
 ```
 
-Now, it's time to focus on the implementation of the frontend code for the browser. Once we retrieve the correct data through the API, we will use `Chart.js` to render them.
+Now, it's time to focus on the implementation of the front-end code for the browser. Once we retrieve the correct data through the API, we will use `Chart.js` to render them.
 
 Check the component code in `pages/index.tsx`. For ease of calling the API in React, we use the library `swr` as follows:
 
@@ -279,6 +279,6 @@ const [year, setYear] = useState("2017");
 
 Next, we can further optimize the styling to make the page more attractive. With this, we have completed the development of this dashboard!
 
-By using TiDB Cloud Data Service, what would have been several days of extensive backend API development work can now be done in just couple minutes. Furthermore, users are not burdened with deployment and operation concerns. All that remains is to push the code to GitHub and, with a few clicks on vercel.com, our application is online!
+By using TiDB Cloud Data Service, what would have been several days of extensive backend API development work can now be done in just a couple of minutes. Furthermore, users are not burdened with deployment and operation concerns. All that remains is to push the code to GitHub and, with a few clicks on vercel.com, our application is online!
 
 You can view the complete source code on our [GitHub repository page](https://github.com/tidbcloud/data-service-example), or try out our online demo [here](https://data-service-example.vercel.app/).
