@@ -45,7 +45,7 @@ type OrderByYearData = ResponseData<{ order_count: string; year: string }>;
 // prettier-ignore
 type AvgPriceByYearData = ResponseData<{ price: string; year: string; }>;
 // prettier-ignore
-type TopPriceByYearData = ResponseData<{ price: string;name: string; }>;
+type TopPriceByYearData = ResponseData<{ price: string; name: string; }>;
 // prettier-ignore
 type OrderByBrandYearData = ResponseData<{ name: string; order_count: string; }>;
 
@@ -209,7 +209,7 @@ export default function Home() {
       <footer className="flex items-center justify-center mt-4">
         <a
           className="flex gap-2"
-          href="https://tidbcloud.com/?utm_source=smartchart&utm_medium=referral"
+          href="https://tidbcloud.com/?utm_source=dataservicedemo&utm_medium=referral"
           target="_blank"
           rel="noopener noreferrer"
           data-mp-event="Click TiDB Cloud Site Link"
