@@ -89,7 +89,7 @@ function RankList({
 export default function Home() {
   const [year, setYear] = useState("2017");
   const { data: orderByYearData } = useSWR(
-    `/api/gateway/order_by_year`,
+    `/api/gateway/total_order_per_year`,
     fetcher as Fetcher<OrderByYearData, string>
   );
   const { data: avgPriceByYearData } = useSWR(
@@ -101,7 +101,7 @@ export default function Home() {
     fetcher as Fetcher<OrderByBrandYearData, string>
   );
   const { data: topPriceByYearData } = useSWR(
-    `/api/gateway/top_price_by_year?year=${year}`,
+    `/api/gateway/price_by_brand_year?year=${year}`,
     fetcher as Fetcher<TopPriceByYearData, string>
   );
 

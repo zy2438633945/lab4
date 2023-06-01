@@ -160,7 +160,7 @@ const fetcher: Fetcher<any, any> = (
 ) => globalThis.fetch(input, init).then((res) => res.json());
 
 const { data: orderByYearData } = useSWR(
-  `/api/gateway/order_per_year`,
+  `/api/gateway/total_order_per_year`,
   fetcher as Fetcher<OrderByYearData, string>
 );
 const { data: avgPriceByYearData } = useSWR(
