@@ -137,7 +137,10 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col max-w-[800px] min-h-screen mx-auto gap-4 pt-8">
+    <div className="flex flex-col max-w-[780px] min-h-screen mx-auto gap-4 pt-8">
+      <header className="text-center font-bold text-xl">
+        Insights into Automotive Sales
+      </header>
       <div className="shadow-xl bg-white rounded p-4 w-full ">
         <Line options={options} data={{ labels, datasets }} />
       </div>
