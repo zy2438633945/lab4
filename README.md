@@ -13,7 +13,12 @@ To begin with, you can refer to the Data Service documentation and try out the o
 
 Before you can start building your dashboard app, you need to prepare your environment. You can do this by signing in to TiDB Cloud and creating a free Serverless Cluster. Simply access [the TiDB Cloud website](https://tidbcloud.com/), sign in using your Google or GitHub account, and click the "Create Cluster" button. Select the "Serverless" option to generate a free cluster that automatically scales based on your usage.
 
-Once your cluster is set up, you can begin exploring the sample data provided by TiDB Cloud. This sample dataset includes a table called `sold_car_orders`, which stores information about car orders. We will use this table to construct the dashboard app.
+Once your cluster is set up, you can begin exploring the sample data provided by TiDB Cloud. The sample dataset that we will explore is a table called `sold_car_orders`, we need to import this data at first.
+1. Log in to [tidbcloud.com](https://tidbcloud.com) and select the Cluster project from the left sidebar. Click `connect` button to get a `mysql` command.
+![image](./images/connect-pages.jpeg)
+
+2. Import local data to this database.
+![image](./images/import-data-via-shell.jpeg)
 
 ## Step-by-step: build & deploy
 
